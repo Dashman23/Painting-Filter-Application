@@ -1,0 +1,97 @@
+<MyScreenManager>:
+    MainScreen:
+
+<MainScreen>:
+    name: 'main'
+    image_display: image_display
+    slider1: slider1
+    slider2: slider2
+    color_picker: color_picker
+
+    BoxLayout:
+        orientation: 'horizontal'
+        padding: 10
+        spacing: 10
+
+        # Left half: Image and buttons
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5
+            spacing: 10
+
+            Image:
+                id: image_display
+                source: ''
+                allow_stretch: True
+                keep_ratio: True
+
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                spacing: 10
+
+                Button:
+                    text: 'Choose Image'
+                    on_press: root.open_filechooser()
+
+                Button:
+                    text: 'Save Image'
+                    on_press: root.on_button_click(self)
+
+                Button:
+                    text: 'Save Settings'
+                    on_press: root.on_button_click(self)
+
+        # Right half: ColorPicker and sliders
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.5
+            spacing: 10
+
+            # ColorPicker with rounded black border
+            BoxLayout:
+                size_hint_y: 0.7
+                padding: 10
+                canvas.before:
+                    Color:
+                        rgba: 0, 0, 0, 1  # Black color
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                        radius: [10]  # Adjust the radius for rounded corners
+
+                ColorPicker:
+                    id: color_picker
+                    on_color: root.on_color(self, self.color)
+
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                spacing: 10
+
+                Label:
+                    text: 'Range:'
+                    size_hint_x: 0.5
+
+                CustomSlider:
+                    id: slider1
+                    min: 0
+                    max: 100
+                    value: 50
+                    on_release: root.on_slider1_release(self)
+
+            BoxLayout:
+                size_hint_y: None
+                height: 40
+                spacing: 10
+
+                Label:
+                    text: 'Color Blend Strength:'
+                    size_hint_x: 0.5
+
+                CustomSlider:
+                    id: slider2
+                    min: 0
+                    max: 100
+                    value: 50
+                    on_release: root.on_slider2_release(self)
