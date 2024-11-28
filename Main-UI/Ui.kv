@@ -5,7 +5,9 @@
     name: 'main'
     image_display: image_display
     slider1: slider1
+    slider1_input: slider1_input
     slider2: slider2
+    slider2_input: slider2_input
     color_picker: color_picker
 
     BoxLayout:
@@ -21,7 +23,7 @@
 
             Image:
                 id: image_display
-                source: ''
+                source: 'IMG_1415.png'
                 allow_stretch: True
                 keep_ratio: True
 
@@ -36,7 +38,7 @@
 
                 Button:
                     text: 'Save Image'
-                    on_press: root.on_button_click(self)
+                    on_press: root.save_image()
 
                 Button:
                     text: 'Save Settings'
@@ -70,15 +72,25 @@
                 spacing: 10
 
                 Label:
-                    text: 'Range:'
-                    size_hint_x: 0.5
+                    text: 'Dither Range:'
+                    size_hint_x: 0.4
 
                 CustomSlider:
                     id: slider1
-                    min: 0
-                    max: 100
-                    value: 50
+                    min: 5
+                    max: 30
+                    value: 18
+                    on_value: slider1_input.text = str(int(self.value))
                     on_release: root.on_slider1_release(self)
+                    size_hint_x: 0.5
+
+                TextInput:
+                    id: slider1_input
+                    text: str(slider1.value)
+                    multiline: False
+                    input_filter: 'int'
+                    on_text_validate: root.update_slider1_value(self.text)
+                    size_hint_x: 0.2
 
             BoxLayout:
                 size_hint_y: None
@@ -87,11 +99,21 @@
 
                 Label:
                     text: 'Color Blend Strength:'
-                    size_hint_x: 0.5
+                    size_hint_x: 0.4
 
                 CustomSlider:
                     id: slider2
                     min: 0
                     max: 100
                     value: 50
+                    on_value: slider2_input.text = str(int(self.value))
                     on_release: root.on_slider2_release(self)
+                    size_hint_x: 0.5
+
+                TextInput:
+                    id: slider2_input
+                    text: str(slider2.value)
+                    multiline: False
+                    input_filter: 'int'
+                    on_text_validate: root.update_slider2_value(self.text)
+                    size_hint_x: 0.2

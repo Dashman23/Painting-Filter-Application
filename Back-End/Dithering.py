@@ -70,24 +70,47 @@ def adjust_rgb(image_path, output_path, r_factor=1.1, g_factor=1.0, b_factor=1.2
 
 
 # Example usage
-adjust_rgb(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\IMG_1415.png', 'dithered_image.png')
-adjust_rgb(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\IMG_1415.png', 'dithered_imageC.png')
-halftone_dither_color(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\dithered_image.png', 'dithered_image.png')
+# adjust_rgb(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\IMG_1415.png', 'dithered_image.png')
+# adjust_rgb(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\IMG_1415.png', 'dithered_imageC.png')
+# halftone_dither_color(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\dithered_image.png', 'dithered_image.png')
 #adjust_rgb(r'C:\Users\Heisn\Desktop\Comp_Photo\Computational_Photography_Assignment\dithered_image.png', 'dithered_image.png')
 
+def dither_blur(image_path, output_path, cell_size=10):
+    # Adjust RGB channels and save the intermediate image
+    adjusted_image_path = 'Temp-Pictures/adjusted_image.png'
+    adjust_rgb(image_path, adjusted_image_path)
+    
+    # Apply halftone dithering and save the result
+    dithered_image_path = 'Temp-Pictures/dithered_image.png'
+    halftone_dither_color(adjusted_image_path, dithered_image_path, cell_size)
+    
+    # Read the dithered image
+    dithered_image = cv2.imread(dithered_image_path)
+    if dithered_image is None:
+        raise FileNotFoundError(f"Failed to load image at {dithered_image_path}")
+    
+    # Define the Gaussian kernel size (must be odd)
+    kernel_size = (cell_size * 2 + 1, cell_size * 2 + 1)
+    sigma = 0  # Standard deviation; if 0, OpenCV calculates it based on the kernel size.
+    
+    # Apply Gaussian Blur
+    blurred_image = cv2.GaussianBlur(dithered_image, kernel_size, sigma)
+    
+    # Save the blurred image
+    cv2.imwrite(output_path, blurred_image)
 
 
-# Read the image
-image = cv2.imread("dithered_image.png")
-imageC = cv2.imread("dithered_imageC.png")
+# # Read the image
+# image = cv2.imread("dithered_image.png")
+# imageC = cv2.imread("dithered_imageC.png")
 
-# Define the Gaussian kernel size (must be odd) and standard deviation
-kernel_size = (51, 51)  # Width and height of the kernel (both must be odd)
-sigma = 0 # Standard deviation. If 0, OpenCV calculates it based on the kernel size.
+# # Define the Gaussian kernel size (must be odd) and standard deviation
+# kernel_size = (51, 51)  # Width and height of the kernel (both must be odd)
+# sigma = 0 # Standard deviation. If 0, OpenCV calculates it based on the kernel size.
 
-# Apply Gaussian Blur
-blurred_image = cv2.GaussianBlur(image, kernel_size, sigma)
-blurred_image_control = cv2.GaussianBlur(imageC, kernel_size, sigma)
-# Save or display the result
-cv2.imwrite("DitheredandBlurred.jpg", blurred_image)
-cv2.imwrite("OnlyBlurred.jpg", blurred_image_control)
+# # Apply Gaussian Blur
+# blurred_image = cv2.GaussianBlur(image, kernel_size, sigma)
+# blurred_image_control = cv2.GaussianBlur(imageC, kernel_size, sigma)
+# # Save or display the result
+# cv2.imwrite("DitheredandBlurred.jpg", blurred_image)
+# cv2.imwrite("OnlyBlurred.jpg", blurred_image_control)

@@ -1,20 +1,22 @@
+import sys
+sys.path.insert(1, 'Back-End')
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.image import Image
 from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.uix.filechooser import FileChooserIconView
 from kivy.uix.popup import Popup
-from kivy.uix.colorpicker import ColorPicker
 from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.uix.slider import Slider
+from kivy.uix.textinput import TextInput
 from kivy.core.window import Window  # Import Window to change background color
 from kivy.utils import get_color_from_hex  # Import utility to convert hex to RGBA
+import Dithering
 
 # Load the UI.kv file
 Builder.load_file('UI.kv')
+curr_img = r'IMG_1415.png'
 
 class CustomSlider(Slider):
     def __init__(self, **kwargs):
@@ -39,10 +41,52 @@ class MainScreen(Screen):
         print(f"{instance.text} button clicked!")
 
     def on_slider1_release(self, instance):
-        print(f"Range value: {int(instance.value)}")
+        global curr_img
+        if curr_img != -1 and isinstance(curr_img, str):
+            try:
+                print(f"Dithering Range value: {int(instance.value)}")
+                Dithering.dither_blur(curr_img, r'Temp-Pictures\dithered_and_blurred_image.png')
+                self.image_display.source = r'Temp-Pictures\dithered_and_blurred_image.png'
+                self.image_display.reload()
+                print("Dithering complete!")
+            except Exception as e:
+                print(f"Error during dithering: {e}")
+        else:
+            print("No valid image selected.")
+
+    def update_slider1_value(self, text):
+        try:
+            value = int(text)  # Convert input to integer
+            if self.slider1.min <= value <= self.slider1.max:  # Validate range
+                self.slider1.value = value  # Update slider value
+                if curr_img != -1 and isinstance(curr_img, str):
+                    try:
+                        print(f"Dithering Range value: {value}")  # Corrected print statement
+                        Dithering.dither_blur(curr_img, r'Temp-Pictures\dithered_and_blurred_image.png')
+                        self.image_display.source = r'Temp-Pictures\dithered_and_blurred_image.png'
+                        self.image_display.reload()
+                        print("Dithering complete!")
+                    except Exception as e:
+                        print(f"Error during dithering: {e}")
+            else:
+                print(f"Value {value} is out of slider range.")
+        except ValueError:
+            print("Invalid input for slider 1")
+
 
     def on_slider2_release(self, instance):
         print(f"Color Blend Strength value: {int(instance.value)}")
+
+    def update_slider2_value(self, text):
+        try:
+            value = int(text)  # Convert input to integer
+            if self.slider2.min <= value <= self.slider2.max:  # Validate range
+                self.slider2.value = value  # Update slider value
+                print(f"Slider 2 updated to: {value}")
+            else:
+                print("Value out of range")
+        except ValueError:
+            print("Invalid input for slider 2")
 
     def open_filechooser(self):
         layout = BoxLayout(orientation='vertical')
@@ -60,14 +104,46 @@ class MainScreen(Screen):
         popup.open()
 
     def load_image(self, selection, popup):
+        global curr_img
         if selection:
             self.image_display.source = selection[0]
+            curr_img = selection[0]
             self.image_display.reload()
             popup.dismiss()
 
     def on_color(self, instance, value):
         print(f"Selected color (RGBA): {value}")
         # Implement any additional functionality with the selected color here
+    def save_image(self):
+        layout = BoxLayout(orientation='vertical', spacing=10)
+        filechooser = FileChooserIconView()
+        filename_input = TextInput(hint_text="Enter file name", size_hint_y=None, height=40)
+        save_button = Button(text="Save", size_hint_y=None, height=40)
+
+        layout.add_widget(filechooser)
+        layout.add_widget(filename_input)
+        layout.add_widget(save_button)
+        popup = Popup(title="Save Image As", content=layout, size_hint=(0.9, 0.9))
+
+        def on_save(instance):
+            if filechooser.path and filename_input.text:
+                filepath = f"{filechooser.path}/{filename_input.text}"
+                self.perform_save(filepath)
+                popup.dismiss()
+
+        save_button.bind(on_press=on_save)
+        popup.open()
+
+    def perform_save(self, filepath):
+        try:
+            if self.image_display.source:
+                from shutil import copyfile
+                copyfile(self.image_display.source, filepath + '.png')
+                print(f"Image saved successfully to {filepath}")
+            else:
+                print("No image to save!")
+        except Exception as e:
+            print(f"Error saving image: {e}")
 
 class MyScreenManager(ScreenManager):
     pass
