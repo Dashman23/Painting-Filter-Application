@@ -10,13 +10,15 @@ from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
-from kivy.core.window import Window  # Import Window to change background color
-from kivy.utils import get_color_from_hex  # Import utility to convert hex to RGBA
+from kivy.core.window import Window
+from kivy.utils import get_color_from_hex
 import Dithering
 
 # Load the UI.kv file
 Builder.load_file('UI.kv')
+
 curr_img = r'IMG_1415.png'
+init_img = r'IMG_1415.png'
 
 class CustomSlider(Slider):
     def __init__(self, **kwargs):
@@ -35,7 +37,6 @@ class MainScreen(Screen):
     image_display = ObjectProperty(None)
     slider1 = ObjectProperty(None)
     slider2 = ObjectProperty(None)
-    color_picker = ObjectProperty(None)
 
     def on_button_click(self, instance):
         print(f"{instance.text} button clicked!")
@@ -55,13 +56,14 @@ class MainScreen(Screen):
             print("No valid image selected.")
 
     def update_slider1_value(self, text):
+        global curr_img
         try:
-            value = int(text)  # Convert input to integer
-            if self.slider1.min <= value <= self.slider1.max:  # Validate range
-                self.slider1.value = value  # Update slider value
+            value = int(text)
+            if self.slider1.min <= value <= self.slider1.max:
+                self.slider1.value = value
                 if curr_img != -1 and isinstance(curr_img, str):
                     try:
-                        print(f"Dithering Range value: {value}")  # Corrected print statement
+                        print(f"Dithering Range value: {value}")
                         Dithering.dither_blur(curr_img, r'Temp-Pictures\dithered_and_blurred_image.png')
                         self.image_display.source = r'Temp-Pictures\dithered_and_blurred_image.png'
                         self.image_display.reload()
@@ -73,15 +75,14 @@ class MainScreen(Screen):
         except ValueError:
             print("Invalid input for slider 1")
 
-
     def on_slider2_release(self, instance):
         print(f"Color Blend Strength value: {int(instance.value)}")
 
     def update_slider2_value(self, text):
         try:
-            value = int(text)  # Convert input to integer
-            if self.slider2.min <= value <= self.slider2.max:  # Validate range
-                self.slider2.value = value  # Update slider value
+            value = int(text)
+            if self.slider2.min <= value <= self.slider2.max:
+                self.slider2.value = value
                 print(f"Slider 2 updated to: {value}")
             else:
                 print("Value out of range")
@@ -104,16 +105,16 @@ class MainScreen(Screen):
         popup.open()
 
     def load_image(self, selection, popup):
-        global curr_img
+        global curr_img, init_img
         if selection:
-            self.image_display.source = selection[0]
             curr_img = selection[0]
-            self.image_display.reload()
+            init_img = selection[0]
+            self.ids.image_display.source = curr_img
+            self.ids.initial_image_display.source = init_img
+            self.ids.image_display.reload()
+            self.ids.initial_image_display.reload()
             popup.dismiss()
 
-    def on_color(self, instance, value):
-        print(f"Selected color (RGBA): {value}")
-        # Implement any additional functionality with the selected color here
     def save_image(self):
         layout = BoxLayout(orientation='vertical', spacing=10)
         filechooser = FileChooserIconView()
@@ -150,7 +151,6 @@ class MyScreenManager(ScreenManager):
 
 class Watercolor_Filter(App):
     def build(self):
-        # Set the initial background color to #568cbaff
         Window.clearcolor = get_color_from_hex('#568cbaff')
         return MyScreenManager()
 

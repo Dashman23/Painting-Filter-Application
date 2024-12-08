@@ -5,24 +5,26 @@
     name: 'main'
     image_display: image_display
     slider1: slider1
-    slider1_input: slider1_input
     slider2: slider2
-    slider2_input: slider2_input
-    color_picker: color_picker
 
     BoxLayout:
         orientation: 'horizontal'
         padding: 10
         spacing: 10
 
-        # Left half: Image and buttons
+        # Left Panel: Original Image and Action Buttons
         BoxLayout:
             orientation: 'vertical'
-            size_hint_x: 0.5
+            size_hint_x: 0.4
             spacing: 10
 
+            Label:
+                text: 'Original Image'
+                size_hint_y: None
+                height: 30
+
             Image:
-                id: image_display
+                id: initial_image_display
                 source: 'IMG_1415.png'
                 allow_stretch: True
                 keep_ratio: True
@@ -44,76 +46,78 @@
                     text: 'Save Settings'
                     on_press: root.on_button_click(self)
 
-        # Right half: ColorPicker and sliders
+        # Right Panel: Altered Image and Sliders (all in one panel)
         BoxLayout:
             orientation: 'vertical'
-            size_hint_x: 0.5
+            size_hint_x: 0.6
             spacing: 10
 
-            # ColorPicker with rounded black border
-            BoxLayout:
-                size_hint_y: 0.7
-                padding: 10
-                canvas.before:
-                    Color:
-                        rgba: 0, 0, 0, 1  # Black color
-                    RoundedRectangle:
-                        size: self.size
-                        pos: self.pos
-                        radius: [10]  # Adjust the radius for rounded corners
-
-                ColorPicker:
-                    id: color_picker
-                    on_color: root.on_color(self, self.color)
-
-            BoxLayout:
+            Label:
+                text: 'Altered Image'
                 size_hint_y: None
-                height: 40
-                spacing: 10
+                height: 30
 
-                Label:
-                    text: 'Dither Range:'
-                    size_hint_x: 0.4
+            Image:
+                id: image_display
+                source: 'IMG_1415.png'
+                allow_stretch: True
+                keep_ratio: True
 
-                CustomSlider:
-                    id: slider1
-                    min: 5
-                    max: 30
-                    value: 18
-                    on_value: slider1_input.text = str(int(self.value))
-                    on_release: root.on_slider1_release(self)
-                    size_hint_x: 0.5
-
-                TextInput:
-                    id: slider1_input
-                    text: str(slider1.value)
-                    multiline: False
-                    input_filter: 'int'
-                    on_text_validate: root.update_slider1_value(self.text)
-                    size_hint_x: 0.2
-
+            # Sliders Section
             BoxLayout:
-                size_hint_y: None
-                height: 40
+                orientation: 'vertical'
                 spacing: 10
+                size_hint_y: None
+                height: 100  # Adjust height as needed
 
-                Label:
-                    text: 'Color Blend Strength:'
-                    size_hint_x: 0.4
+                BoxLayout:
+                    size_hint_y: None
+                    height: 40
+                    spacing: 10
 
-                CustomSlider:
-                    id: slider2
-                    min: 0
-                    max: 100
-                    value: 50
-                    on_value: slider2_input.text = str(int(self.value))
-                    on_release: root.on_slider2_release(self)
-                    size_hint_x: 0.5
+                    Label:
+                        text: 'Dither Range:'
+                        size_hint_x: 0.5
 
-                TextInput:
-                    id: slider2_input
-                    text: str(slider2.value)
-                    multiline: False
-                    input_filter: 'int'
-                    on_text_validate: root.update_slider2_value(self.text)
-                    size_hint_x: 0.2
+                    CustomSlider:
+                        id: slider1
+                        min: 5
+                        max: 30
+                        value: 18
+                        on_value: root.ids.slider1_input.text = str(int(self.value))
+                        on_release: root.on_slider1_release(self)
+                        size_hint_x: 0.7
+
+                    TextInput:
+                        id: slider1_input
+                        text: str(slider1.value)
+                        multiline: False
+                        input_filter: 'int'
+                        on_text_validate: root.update_slider1_value(self.text)
+                        size_hint_x: 0.3
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: 40
+                    spacing: 10
+
+                    Label:
+                        text: 'Color Blend Strength:'
+                        size_hint_x: 0.5
+
+                    CustomSlider:
+                        id: slider2
+                        min: 0
+                        max: 100
+                        value: 50
+                        on_value: root.ids.slider2_input.text = str(int(self.value))
+                        on_release: root.on_slider2_release(self)
+                        size_hint_x: 0.7
+
+                    TextInput:
+                        id: slider2_input
+                        text: str(slider2.value)
+                        multiline: False
+                        input_filter: 'int'
+                        on_text_validate: root.update_slider2_value(self.text)
+                        size_hint_x: 0.3
