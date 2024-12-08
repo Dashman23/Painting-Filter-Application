@@ -4,120 +4,196 @@
 <MainScreen>:
     name: 'main'
     image_display: image_display
-    slider1: slider1
-    slider2: slider2
 
     BoxLayout:
-        orientation: 'horizontal'
+        orientation: 'vertical'
         padding: 10
         spacing: 10
 
-        # Left Panel: Original Image and Action Buttons
+        # Top row: Images side by side
         BoxLayout:
-            orientation: 'vertical'
-            size_hint_x: 0.4
+            orientation: 'horizontal'
             spacing: 10
 
-            Label:
-                text: 'Original Image'
-                size_hint_y: None
-                height: 30
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.5
+                spacing: 10
 
-            Image:
-                id: initial_image_display
-                source: 'IMG_1415.png'
-                allow_stretch: True
-                keep_ratio: True
+                Label:
+                    text: 'Original Image'
+                    size_hint_y: None
+                    height: 30
+
+                Image:
+                    id: initial_image_display
+                    source: 'Default.JPG'
+                    allow_stretch: True
+                    keep_ratio: True
+                    size_hint_y: 1
 
             BoxLayout:
-                size_hint_y: None
-                height: 40
+                orientation: 'vertical'
+                size_hint_x: 0.5
+                spacing: 10
+
+                Label:
+                    text: 'Altered Image'
+                    size_hint_y: None
+                    height: 30
+
+                Image:
+                    id: image_display
+                    source: 'Default.JPG'
+                    allow_stretch: True
+                    keep_ratio: True
+                    size_hint_y: 1
+
+        # Bottom row: Buttons on left, Sliders on right
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 200
+            spacing: 10
+
+            # Left column: Buttons
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_x: 0.4
                 spacing: 10
 
                 Button:
                     text: 'Choose Image'
+                    size_hint_y: None
+                    height: 40
                     on_press: root.open_filechooser()
 
                 Button:
                     text: 'Save Image'
+                    size_hint_y: None
+                    height: 40
                     on_press: root.save_image()
 
+
                 Button:
-                    text: 'Save Settings'
-                    on_press: root.on_button_click(self)
+                    text: 'Apply Filter'
+                    size_hint_y: None
+                    height: 40
+                    on_press: root.apply_filter()
 
-        # Right Panel: Altered Image and Sliders (all in one panel)
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_x: 0.6
-            spacing: 10
-
-            Label:
-                text: 'Altered Image'
-                size_hint_y: None
-                height: 30
-
-            Image:
-                id: image_display
-                source: 'IMG_1415.png'
-                allow_stretch: True
-                keep_ratio: True
-
-            # Sliders Section
+            # Right column: Sliders
             BoxLayout:
                 orientation: 'vertical'
+                size_hint_x: 0.6
                 spacing: 10
-                size_hint_y: None
-                height: 100  # Adjust height as needed
 
+                # Minimum line length slider
                 BoxLayout:
+                    orientation: 'horizontal'
                     size_hint_y: None
                     height: 40
                     spacing: 10
 
                     Label:
-                        text: 'Dither Range:'
+                        text: 'Min line length:'
                         size_hint_x: 0.5
 
                     CustomSlider:
-                        id: slider1
-                        min: 5
-                        max: 30
-                        value: 18
-                        on_value: root.ids.slider1_input.text = str(int(self.value))
-                        on_release: root.on_slider1_release(self)
+                        id: slider_min_length
+                        min: 1
+                        max: 5
+                        value: 2
+                        step: 1
+                        on_value: root.ids.slider_min_length_input.text = str(int(self.value))
                         size_hint_x: 0.7
 
                     TextInput:
-                        id: slider1_input
-                        text: str(slider1.value)
+                        id: slider_min_length_input
+                        text: str(int(slider_min_length.value))
                         multiline: False
                         input_filter: 'int'
-                        on_text_validate: root.update_slider1_value(self.text)
+                        on_text_validate: root.update_slider_min_length(self.text)
                         size_hint_x: 0.3
 
+                # Maximum line length slider
                 BoxLayout:
+                    orientation: 'horizontal'
                     size_hint_y: None
                     height: 40
                     spacing: 10
 
                     Label:
-                        text: 'Color Blend Strength:'
+                        text: 'Max line length:'
                         size_hint_x: 0.5
 
                     CustomSlider:
-                        id: slider2
-                        min: 0
-                        max: 100
-                        value: 50
-                        on_value: root.ids.slider2_input.text = str(int(self.value))
-                        on_release: root.on_slider2_release(self)
+                        id: slider_max_length
+                        min: 1
+                        max: 5
+                        value: 4
+                        step: 1
+                        on_value: root.ids.slider_max_length_input.text = str(int(self.value))
                         size_hint_x: 0.7
 
                     TextInput:
-                        id: slider2_input
-                        text: str(slider2.value)
+                        id: slider_max_length_input
+                        text: str(int(slider_max_length.value))
                         multiline: False
                         input_filter: 'int'
-                        on_text_validate: root.update_slider2_value(self.text)
+                        on_text_validate: root.update_slider_max_length(self.text)
+                        size_hint_x: 0.3
+
+                # Allowed error slider
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 40
+                    spacing: 10
+
+                    Label:
+                        text: 'Allowed Error:'
+                        size_hint_x: 0.5
+
+                    CustomSlider:
+                        id: slider_allowed_error
+                        min: 1
+                        max: 75
+                        value: 16
+                        step: 1
+                        on_value: root.ids.slider_allowed_error_input.text = str(int(self.value))
+                        size_hint_x: 0.7
+
+                    TextInput:
+                        id: slider_allowed_error_input
+                        text: str(int(slider_allowed_error.value))
+                        multiline: False
+                        input_filter: 'int'
+                        on_text_validate: root.update_slider_allowed_error(self.text)
+                        size_hint_x: 0.3
+
+                # Brushstroke opacity slider
+                BoxLayout:
+                    orientation: 'horizontal'
+                    size_hint_y: None
+                    height: 40
+                    spacing: 10
+
+                    Label:
+                        text:'Brushstroke opacity:'
+                        size_hint_x: 0.5
+
+                    CustomSlider:
+                        id: slider_opacity
+                        min: 0.5
+                        max: 1.0
+                        value: 0.7
+                        step: 0.1
+                        on_value: root.ids.slider_opacity_input.text = "{:.1f}".format(self.value)
+                        size_hint_x: 0.7
+
+                    TextInput:
+                        id: slider_opacity_input
+                        text: "{:.1f}".format(slider_opacity.value)
+                        multiline: False
+                        on_text_validate: root.update_slider_opacity(self.text)
                         size_hint_x: 0.3

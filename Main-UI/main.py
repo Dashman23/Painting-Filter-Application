@@ -13,12 +13,13 @@ from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from kivy.utils import get_color_from_hex
 import Dithering
+import PaintingLogic
 
 # Load the UI.kv file
 Builder.load_file('UI.kv')
 
-curr_img = r'IMG_1415.png'
-init_img = r'IMG_1415.png'
+curr_img = r'Default.JPG'
+init_img = r'Default.JPG'
 
 class CustomSlider(Slider):
     def __init__(self, **kwargs):
@@ -35,60 +36,83 @@ class CustomSlider(Slider):
 
 class MainScreen(Screen):
     image_display = ObjectProperty(None)
-    slider1 = ObjectProperty(None)
-    slider2 = ObjectProperty(None)
 
     def on_button_click(self, instance):
         print(f"{instance.text} button clicked!")
 
-    def on_slider1_release(self, instance):
-        global curr_img
-        if curr_img != -1 and isinstance(curr_img, str):
+    def update_slider_min_length(self, text):
+        try:
+            value = int(text)
+            if 1 <= value <= 5:
+                self.ids.slider_min_length.value = value
+                print(f"Minimum line length set to {value} (waiting for Apply Filter)")
+            else:
+                print(f"Value {value} is out of range (1-5).")
+        except ValueError:
+            print("Invalid input for minimum line length")
+
+    def update_slider_max_length(self, text):
+        try:
+            value = int(text)
+            if 1 <= value <= 5:
+                self.ids.slider_max_length.value = value
+                print(f"Maximum line length set to {value} (waiting for Apply Filter)")
+            else:
+                print(f"Value {value} is out of range (1-5).")
+        except ValueError:
+            print("Invalid input for maximum line length")
+
+    def update_slider_allowed_error(self, text):
+        try:
+            value = int(text)
+            if 1 <= value <= 75:
+                self.ids.slider_allowed_error.value = value
+                print(f"Allowed error set to {value} (waiting for Apply Filter)")
+            else:
+                print(f"Value {value} is out of range (1-75).")
+        except ValueError:
+            print("Invalid input for allowed error")
+
+    def update_slider_opacity(self, text):
+        try:
+            value = float(text)
+            if 0.5 <= value <= 1.0:
+                # Snap to nearest 0.1
+                rounded_value = round(value * 10) / 10.0
+                self.ids.slider_opacity.value = rounded_value
+                self.ids.slider_opacity_input.text = "{:.1f}".format(rounded_value)
+                print(f"Brushstroke opacity set to {rounded_value} (waiting for Apply Filter)")
+            else:
+                print("Value out of range (0.5-1.0)")
+        except ValueError:
+            print("Invalid input for brushstroke opacity")
+
+    def apply_filter(self):
+        global init_img
+        if init_img != -1 and isinstance(init_img, str):
             try:
-                print(f"Dithering Range value: {int(instance.value)}")
-                Dithering.dither_blur(curr_img, r'Temp-Pictures\dithered_and_blurred_image.png')
-                self.image_display.source = r'Temp-Pictures\dithered_and_blurred_image.png'
+                min_length = int(self.ids.slider_min_length.value)
+                max_length = int(self.ids.slider_max_length.value)
+                allowed_error = int(self.ids.slider_allowed_error.value)
+                opacity = float(self.ids.slider_opacity.value)
+                output_path = r'Temp-Pictures\FinalImage.png'
+
+                print(f"Applying filter with parameters:")
+                print(f"  Minimum line length: {min_length}")
+                print(f"  Maximum line length: {max_length}")
+                print(f"  Allowed Error: {allowed_error}")
+                print(f"  Brushstroke opacity: {opacity}")
+
+                # Run your dithering logic here, for example:
+                PaintingLogic.apply_filter(init_img, output_path, min_length, max_length, allowed_error, opacity)
+                self.image_display.source = output_path
                 self.image_display.reload()
-                print("Dithering complete!")
+                print("Filter applied successfully!")
             except Exception as e:
-                print(f"Error during dithering: {e}")
+                print(f"Error applying filter: {e}")
         else:
             print("No valid image selected.")
-
-    def update_slider1_value(self, text):
-        global curr_img
-        try:
-            value = int(text)
-            if self.slider1.min <= value <= self.slider1.max:
-                self.slider1.value = value
-                if curr_img != -1 and isinstance(curr_img, str):
-                    try:
-                        print(f"Dithering Range value: {value}")
-                        Dithering.dither_blur(curr_img, r'Temp-Pictures\dithered_and_blurred_image.png')
-                        self.image_display.source = r'Temp-Pictures\dithered_and_blurred_image.png'
-                        self.image_display.reload()
-                        print("Dithering complete!")
-                    except Exception as e:
-                        print(f"Error during dithering: {e}")
-            else:
-                print(f"Value {value} is out of slider range.")
-        except ValueError:
-            print("Invalid input for slider 1")
-
-    def on_slider2_release(self, instance):
-        print(f"Color Blend Strength value: {int(instance.value)}")
-
-    def update_slider2_value(self, text):
-        try:
-            value = int(text)
-            if self.slider2.min <= value <= self.slider2.max:
-                self.slider2.value = value
-                print(f"Slider 2 updated to: {value}")
-            else:
-                print("Value out of range")
-        except ValueError:
-            print("Invalid input for slider 2")
-
+       # init_img = output_path
     def open_filechooser(self):
         layout = BoxLayout(orientation='vertical')
         filechooser = FileChooserIconView(filters=['*.png', '*.jpg', '*.jpeg'])
@@ -149,10 +173,11 @@ class MainScreen(Screen):
 class MyScreenManager(ScreenManager):
     pass
 
-class Watercolor_Filter(App):
+class Painting_Filter(App):
     def build(self):
+        Window.size = (1200, 800)
         Window.clearcolor = get_color_from_hex('#568cbaff')
         return MyScreenManager()
 
 if __name__ == '__main__':
-    Watercolor_Filter().run()
+    Painting_Filter().run()
