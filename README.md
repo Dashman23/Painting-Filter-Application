@@ -27,19 +27,19 @@ Each brushstroke drawn will have a length randomized between the minimum line le
 
 ### Some Examples
 
-![](Readme\portrait.jpg)
+![](Readme/portrait.jpg)
 
 *Source Image*
 
-![](Readme\portrait_painted.png)
+![](Readme/portrait_painted.png)
 
 *Painted Filter*
 
-![](Readme\landscape.jpg)
+![](Readme/landscape.jpg)
 
 *Source Image*
 
-![](Readme\landscape_painted.png)
+![](Readme/landscape_painted.png)
 
 *Painted Filter*
 
@@ -48,13 +48,13 @@ Below are some ideas which did not find a place in this project, but may have so
 
 #### Color palette limiting
 
-![](Readme\landscape_segmented.png)
+![](Readme/landscape_segmented.png)
 
 *Color segmented Image*
 
 One way to effectively break an image into segments is to find n colors in the image which are the furthest apart from each other via euclidean distance (where n can be an editable parameter). First we apply a bilateral filter to reduce noise and preserve edges. Then, we find the closest color to each pixel from the list of colors in our color palette (of n furthest colors). this helps generate cleaner lines than most denoising techniques if we use sobel filters on the segmented image:
 
-![](Readme\landscape_edges.png)
+![](Readme/landscape_edges.png)
 
 *Edges from Color Segmentation*
 
