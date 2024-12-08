@@ -1,6 +1,0 @@
-{
-    "materialkv.pythonFile": "main.py",
-    "python.analysis.extraPaths": [
-        "./Back-End"
-    ]
-}
