@@ -12,9 +12,12 @@ from kivy.uix.slider import Slider
 from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from kivy.utils import get_color_from_hex
+from kivy.core.text import LabelBase
 import Dithering
 import PaintingLogic
 
+#Load custom font
+LabelBase.register(name="custom_font", fn_regular="MoonkidspersonaluseExtrabold-X3n72.otf")
 # Load the UI.kv file
 Builder.load_file('UI.kv')
 
@@ -176,7 +179,7 @@ class MyScreenManager(ScreenManager):
 class Painting_Filter(App):
     def build(self):
         Window.size = (1200, 800)
-        Window.clearcolor = get_color_from_hex('#568cbaff')
+        Window.clearcolor = get_color_from_hex('#2A2D34')
         return MyScreenManager()
 
 if __name__ == '__main__':

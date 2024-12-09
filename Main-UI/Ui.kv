@@ -4,11 +4,23 @@
 <MainScreen>:
     name: 'main'
     image_display: image_display
+    custom_font: "custom_font"  # Custom Font
 
     BoxLayout:
         orientation: 'vertical'
         padding: 10
         spacing: 10
+
+        # Title at the top
+        Label:
+            text: 'Painting Filter Application'
+            font_size: 24
+            bold: True
+            size_hint_y: None
+            height: 50
+            halign: 'center'
+            valign: 'middle'
+            font_name: root.custom_font
 
         # Top row: Images side by side
         BoxLayout:
@@ -24,6 +36,7 @@
                     text: 'Original Image'
                     size_hint_y: None
                     height: 30
+                    font_name: root.custom_font
 
                 Image:
                     id: initial_image_display
@@ -41,6 +54,7 @@
                     text: 'Altered Image'
                     size_hint_y: None
                     height: 30
+                    font_name: root.custom_font
 
                 Image:
                     id: image_display
@@ -67,19 +81,21 @@
                     size_hint_y: None
                     height: 40
                     on_press: root.open_filechooser()
+                    font_name: root.custom_font
 
                 Button:
                     text: 'Save Image'
                     size_hint_y: None
                     height: 40
                     on_press: root.save_image()
-
+                    font_name: root.custom_font
 
                 Button:
                     text: 'Apply Filter'
                     size_hint_y: None
                     height: 40
                     on_press: root.apply_filter()
+                    font_name: root.custom_font
 
             # Right column: Sliders
             BoxLayout:
@@ -97,6 +113,7 @@
                     Label:
                         text: 'Min line length:'
                         size_hint_x: 0.5
+                        font_name: root.custom_font
 
                     CustomSlider:
                         id: slider_min_length
@@ -125,6 +142,7 @@
                     Label:
                         text: 'Max line length:'
                         size_hint_x: 0.5
+                        font_name: root.custom_font
 
                     CustomSlider:
                         id: slider_max_length
@@ -153,6 +171,7 @@
                     Label:
                         text: 'Allowed Error:'
                         size_hint_x: 0.5
+                        font_name: root.custom_font
 
                     CustomSlider:
                         id: slider_allowed_error
@@ -181,6 +200,7 @@
                     Label:
                         text:'Brushstroke opacity:'
                         size_hint_x: 0.5
+                        font_name: root.custom_font
 
                     CustomSlider:
                         id: slider_opacity

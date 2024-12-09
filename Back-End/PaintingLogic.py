@@ -27,7 +27,7 @@ def draw_smooth_line(image, pt1, pt2, color, thickness, alpha):
 def apply_filter(input_path, output_path, min_length, max_length, allowed_error, opacity):
     image = cv2.imread(input_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    print(f'{image.shape}')
+    print(f'Image Dimensions: {image.shape}')
     height, width, unused = image.shape
 
     if height > 450 or width > 600:
