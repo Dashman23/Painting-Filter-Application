@@ -1,0 +1,8 @@
+PySimpleGUI
+Pillow
+numpy
+opencv-python
+matplotlib
+scipy
+pyyaml
+kivy

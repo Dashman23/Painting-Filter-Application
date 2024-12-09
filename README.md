@@ -7,6 +7,12 @@ Made by Daniel Zajac and Heisn Nithysingha
 
 This project uses several computational photography techniques including sobel filtering, bilateral filtering and brushstroke generation to take source images and render a 'painted' version of them. Below are the steps this algorithm takes to produce the resulting image, as well as a description of the parameters which the user can modify to alter the resulting image as they please.
 
+### How to Run Project
+First you need to open your terminal, navigate to the project directory and run the following command: 
+* pip install -r requirements.txt
+*Make sure to have Python and Pip installed*
+Now to run the application simply run the main.py file.
+
 ### Algorithm
 The most important part of this filter is the way that it draws large brushstrokes in areas of low detail and smaller more precise brushstrokes in areas of higher detail. Here is a breakdown of how this works:
 
