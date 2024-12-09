@@ -10,7 +10,9 @@ This project uses several computational photography techniques including sobel f
 ### How to Run Project
 First you need to open your terminal, navigate to the project directory and run the following command: 
 * pip install -r requirements.txt
+
 *Make sure to have Python and Pip installed*
+
 Now to run the application simply run the main.py file.
 
 ### Algorithm
